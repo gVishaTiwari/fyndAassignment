@@ -67,20 +67,20 @@ module.exports.adminEdit = async function (req, res) {
   }
 };
 module.exports.deleteMovie = async function (req, res) {
-  console.log(req.cookies.id);
-  let adminOrnot = await User.findById(req.body.token);
-  console.log(adminOrnot);
-  if (adminOrnot.profile === "admin") {
+  // console.log(req.cookies.id);
+  // let adminOrnot = await User.findById(req.body.token);
+  console.log("Request Body",req.body);
+  // if (adminOrnot.profile === "admin") {
     const movie_id = req.body.movie_id;
 
-    Movies.findById(movie_id, function (err, movie) {
-      if (err) {
-        console.log("No Movie Found");
+    // Movies.findById(movie_id, function (err, movie) {
+    //   if (err) {
+    //     console.log("No Movie Found");
 
-        return res.status(500).json({
-          message: "No Movie Found",
-        });
-      }
+    //     return res.status(500).json({
+    //       message: "No Movie Found",
+    //     });
+    //   }
       Movies.findByIdAndDelete(movie_id, req.body, function (err, movies) {
         if (err) {
           console.log("No Movie Found");
@@ -94,12 +94,12 @@ module.exports.deleteMovie = async function (req, res) {
           Moveis: movies,
         });
       });
-    });
-  } else {
-    return res.status(500).json({
-      message: "permission not alowed",
-    });
-  }
+    // });
+  // } else {
+  //   return res.status(500).json({
+  //     message: "permission not alowed",
+  //   });
+  // }
 };
 module.exports.find = function (req, res) {
   let id = req.params.id;
@@ -122,11 +122,16 @@ module.exports.search = async function (req, res) {
   //     Messaging:"Movie List",
   //    Movies:searchMovie
   // });
-  let searchMovie = await Movies.find({ name: req.params.search });
-  return res.status(200).json({
-    Messaging: "Movie List",
-    Movies: searchMovie,
-  });
+  console.log(req.params);
+  // let searchMovie = await Movies.find({ "name": req.params.search });
+  let searchMovieByName = await Movies.find( { "name" : { $regex : new RegExp(req.params.search, "i") } });
+  let searchMovieByDirector = await Movies.find( { "director" : { $regex : new RegExp(req.params.search, "i") } });
+  
+  console.log("Find Data",searchMovieByName[0]+"  : ",searchMovieByName.length);
+     return res.status(200).json({
+       Messaging: "Movie List",
+       Movies: searchMovieByName.concat(searchMovieByDirector).filter((mov,i,arr)=>arr.indexOf(mov)===i),
+     });
 };
 module.exports.allMovies = function (req, res) {
   // Movies.find({}, function (err, movies) {
@@ -144,13 +149,13 @@ module.exports.allMovies = function (req, res) {
   const pageSize = +req.query.pagesize;
     const currentPage = +req.query.page;
     let fetchedMovies;
-    console.log(pageSize + ' ' + currentPage);
+    // console.log(pageSize + ' ' + currentPage);
     const MovieQuery = Movies.find();
     if(pageSize && currentPage){
         MovieQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
     }
     MovieQuery.find().then(documents =>{
-        console.log(documents);
+        // console.log(documents);
         fetchedMovies = documents;
         return Movies.count();
     }).then(count =>{

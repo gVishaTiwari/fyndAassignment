@@ -1,0 +1,4 @@
+{
+    "jwtSecret":"123456789",
+    "expiresIn": "1h"
+}

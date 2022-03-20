@@ -12,6 +12,6 @@ router.post('/adminedit',moviesController.adminEdit);
 router.post('/create',moviesController.create);
 router.get('/find/:id',moviesController.find);
 router.get('/allMovies',moviesController.allMovies);
-
+// router.get('/',moviesController.allMovies);
 
 module.exports= router;

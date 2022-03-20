@@ -1,6 +1,6 @@
 const expres = require('express');
 const app = expres();
-const port = 3300;
+const port = process.env.PORT || 3300;
 const cors = require('cors');
 const cookieparse = require('cookie-parser');
 const db = require('./config/mongoose');

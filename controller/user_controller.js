@@ -66,14 +66,14 @@ module.exports.createUser = function (req, res) {
 module.exports.createSession = function (req, res) {
   //find the user
   console.log("Request::", req)
-  User.findOne({ Email: req.body.Email }, function (err, user) {
-    // console.log();
+  User.findOne({ Email: req.body.Email }, function (err, user=null) {
+    console.log(user.Email);
     if (err) {
       console.log("Error finding user while signing in");
       return;
     }
     // handle user found
-    if (user) {
+    if (user.Email) {
       let email=user.Email;
       let profile=user.profile;
       let name=user.name;
